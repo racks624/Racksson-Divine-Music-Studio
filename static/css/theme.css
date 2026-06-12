@@ -1,0 +1,8 @@
+/* themes.css — additional theme variants (gold, indigo, violet crown) */
+.theme-golden body { --gold:#D4AF37; --panel:#1a0f1a; }
+.theme-indigo body { --gold:#B68DFF; --panel:#0a0a22; }
+.theme-violet body { --gold:#E6C9FF; --panel:#11061a; }
+
+/* utilities */
+.container-center { display:flex; align-items:center; justify-content:center; }
+.hidden { display:none; }

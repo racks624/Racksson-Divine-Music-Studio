@@ -1,0 +1,7 @@
+/* subtle cosmic animations */
+@keyframes shimmer {
+  0% { transform: translateY(0); opacity:1; }
+  50% { transform: translateY(-6px); opacity:0.9; }
+  100% { transform: translateY(0); opacity:1; }
+}
+.pulsing { animation: shimmer 1.4s infinite ease-in-out; }

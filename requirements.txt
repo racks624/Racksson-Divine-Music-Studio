@@ -1,0 +1,11 @@
+Flask>=2.0
+Flask-Cors>=3.0
+gunicorn
+numpy
+pygame
+mido
+python-rtmidi
+librosa
+soundfile
+requests
+openai

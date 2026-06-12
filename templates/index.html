@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block head %}
+<meta name="description" content="Racksson ∞ Music of the Universe — Awaken the Divine Harmonics Within" />
+{% endblock %}
+
+{% block content %}
+<section style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
+   <div style="flex:1;min-width:320px;">
+      <h1 style="font-family:'Cinzel Decorative';font-size:32px;color:var(--gold)">🎶 Racksson ∞ Music of the Universe</h1>
+      <p class="brand-sub">Awaken the Divine Harmonics Within — create beats, rhythms, and chakra-aligning symphonies.</p>
+      
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+         <a class="btn gold" href="{{ url_for('studio_pro') }}">🌀 Enter Studio Portal</a>
+         <a class="btn" href="{{ url_for('instrumentals') }}">🎶 Instrumentals</a>
+         <a class="btn" href="{{ url_for('harmonizer') }}">🧘 Chakra Harmonizer</a>
+      </div>
+      
+      <div style="margin-top:18px;color:#bfb8b0">
+         <p><strong>Manifest:</strong> Golden Spirit Theme • Chakra Frequencies • Sacred Geometry • Worldwide ready PWA & APK paths.</p>
+      </div>
+   </div>
+   
+   <div style="width:420px;min-width:280px;">
+      <div class="spine" style="padding:14px;border-radius:12px;">
+         <h3 style="margin-top:0;color:var(--gold)">Featured</h3>
+         <ul>
+            <li>Multi-track Studio (drums, bass, lead, chords)</li>
+            <li>Chakra Tuner (139Hz, 432Hz, 528Hz, 852Hz, 963Hz)</li>
+            <li>Record, mix, save locally or to cloud</li>
+         </ul>
+         <div style="margin-top:10px"><a class="btn" href="{{ url_for('dashboard') }}">📈 Open Dashboard</a></div>
+      </div>
+   </div>
+</section>
+{% endblock %}

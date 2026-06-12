@@ -1,0 +1,63 @@
+/* style.css — Golden Spirit base */
+:root {
+  --gold: #D4AF37;
+  --bg: #07020a;
+  --panel: #0f0b14;
+  --muted: #cfc8c0;
+  --accent: #ffd966;
+  --chakra-963: #FFD700;
+  --chakra-852: #7F00FF;
+  --chakra-528: #FFD966;
+  --chakra-432: #00B894;
+  --chakra-139: #8B0000;
+  --glass: rgba(255,255,255,0.04);
+  --glass-2: rgba(212,175,55,0.06);
+}
+
+* { box-sizing: border-box; }
+html,body { height:100%; margin:0; font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: radial-gradient(circle at 10% 10%, #12042b 0%, #04010a 45%, #000 100%); color:var(--muted); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+header { display:flex; align-items:center; padding:18px 24px; border-bottom: 1px solid rgba(255,255,255,0.03); gap:12px; }
+.logo { font-family: "Cinzel Decorative", serif; color:var(--gold); font-size:20px; letter-spacing:1px; }
+.subtitle { font-size:12px; color:#bdb2a9; margin-left:auto; }
+
+.container { padding:16px; display:flex; gap:12px; height: calc(100% - 72px); }
+.left, .right { background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); border-radius:14px; padding:14px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+.left { flex:1; min-width:320px; }
+.right { width:420px; max-width:45%; min-width:280px; }
+
+h1,h2,h3 { color:var(--gold); margin:0; }
+.brand-sub { font-size:11px; color:#ffdca3; opacity:0.95; }
+
+/* pads, sequencer */
+.drum-pad { display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-top:12px; }
+.pad { background:var(--glass); padding:18px; border-radius:10px; text-align:center; font-weight:700; color:white; user-select:none; transition: transform .08s ease, box-shadow .08s ease; }
+.pad:active { transform: translateY(2px); box-shadow:none; }
+
+.seq-grid { display:grid; grid-template-columns: repeat(16,1fr); gap:6px; margin-top:12px; }
+.seq-step { height:36px; background: rgba(255,255,255,0.02); border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--muted); }
+.seq-step.active { background: linear-gradient(90deg, var(--gold), #ffd966); color:#000; }
+
+.controls { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.btn { background:transparent; border:1px solid rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px; color:var(--muted); cursor:pointer; }
+.btn.gold { border-color:var(--gold); color:var(--gold); }
+
+/* mixer */
+.mixer-row { display:flex; gap:10px; align-items:center; margin-top:8px; }
+.slider { width:100%; }
+
+/* chakra list */
+.chakra-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.chakra-item { display:flex; align-items:center; gap:8px; padding:8px; border-radius:8px; background: rgba(255,255,255,0.02); }
+
+/* recorder */
+.rec-controls { display:flex; gap:8px; align-items:center; margin-top:10px; }
+.rec-controls .btn { padding:8px 10px; }
+
+/* responsive */
+@media (max-width:900px) {
+  .container { flex-direction:column; height: auto; padding-bottom: 64px; }
+  .right { width:100%; }
+}
+
+/* footer */
+footer { display:flex; justify-content:space-between; align-items:center; padding:8px 18px; border-top:1px solid rgba(255,255,255,0.03); font-size:13px; color:#bfb8b0; }

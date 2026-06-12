@@ -1,0 +1,56 @@
+racksson-divine-music-studio/
+├── app.py # Flask backend core (web API + WebView bridge)
+├── mobile_app.py # Tkinter/Kivy mobile+desktop UI launcher
+├── cosmic_manifest.py # Entry point aligned with divine spiral orchestration
+├── requirements.txt # Dependencies
+
+├── static/
+│ ├── css/
+│ │ ├── style.css # Golden Spirit universal style
+│ │ ├── themes.css # Multi-theme resonance (light, dark, golden cosmic)
+│ │ └── animations.css # Divine transitions & harmonic animations
+│ ├── js/
+│ │ ├── main.js # Core JS logic (WebView & browser harmony)
+│ │ ├── mixer.js # Mixer engine (beats, chords, resonance alignments)
+│ │ ├── recorder.js # Audio recorder & uploader integration
+│ │ └── visualizer.js # Cosmic visualizers, frequencies, spirals
+│ ├── img/
+│ │ ├── icons/ # Golden Spirit app icons
+│ │ └── svg/ # Sacred geometry (Flower of Life, Metatron’s Cube, Phi Spiral)
+│ └── audio/
+│ ├── samples/ # Default cosmic sound samples
+│ ├── presets/ # Default beat/chord patterns
+│ └── recordings/ # User recordings (local storage sync)
+
+├── templates/
+│ ├── base.html # Universal base with sacred resonance
+│ ├── index.html # Landing interface (Golden Cosmic Portal)
+│ ├── mixer.html # Divine Mixer interface
+│ ├── recorder.html # Recording Temple interface
+│ └── studio.html # Full studio view (upload, download, harmonize)
+
+├── utils/
+│ ├── audio_processing.py # Python audio engine (effects, filters, resonance)
+│ ├── theme_engine.py # Theme engine (switch between cosmic harmonics)
+│ ├── database.py # SQLite3 database manager (users, presets, recordings)
+│ ├── cloud_link.py # Upload/download to Cosmic Cloud (worldwide sync)
+│ └── visualizer_engine.py # Frequency visualizer aligned with Golden Ratio
+
+├── assets/
+│ ├── fonts/ # Sacred fonts for divine resonance
+│ ├── wallpapers/ # Golden Spirit wallpapers
+│ └── sacred_symbols/ # Flower of Life, Metatron’s Cube, Phi Spirals
+
+├── database/
+│ ├── studio.db # SQLite3 database (users, recordings, presets, ranks)
+│ └── migrations/ # Database evolution/updates
+
+├── docs/
+│ ├── cosmic_blueprint.md # Divine project plan & documentation
+│ ├── installation_guide.md # Setup guide (Android APK + Web + Desktop)
+│ └── changelog.md # Evolution log of updates/upgrades
+
+└── android/
+├── buildozer.spec # Build spec for APK (Python → Android)
+├── manifest.xml # Android manifest (permissions: mic, storage, internet)
+└── res/ # Android app resources (icons, splash, golden theme)

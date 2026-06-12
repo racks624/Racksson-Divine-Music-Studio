@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+   <div style="flex:1;min-width:320px;background:var(--glass);padding:12px;border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+         <h2 style="margin:0;color:var(--gold)">Studio • Multi-track Sequencer</h2>
+         <div style="margin-left:auto;display:flex;gap:8px">
+            <label class="brand-sub">BPM</label>
+            <input id="bpm" type="number" value="90" min="40" max="240" style="width:88px;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.04)">
+            <button id="playSeq" class="btn gold">▶ Play</button>
+            <button id="stopSeq" class="btn">■ Stop</button>
+         </div>
+      </div>
+      
+      <div style="margin-top:12px">
+         <div id="tracksContainer"></div>
+      </div>
+      
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+         <button id="saveProject" class="btn gold">💾 Save Project</button>
+         <button id="loadProject" class="btn">📂 Load Project</button>
+         <button id="exportMix" class="btn">🔊 Export Mix</button>
+      </div>
+   </div>
+   
+   <div style="width:420px;background:var(--glass);padding:12px;border-radius:12px;">
+      <h3 style="color:var(--gold)">Chakra Tuner & Recorder</h3>
+      <div id="chakraList"></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0;">
+      <div style="display:flex;gap:8px">
+         <button id="startRec" class="btn gold">🎙 Record</button>
+         <button id="stopRec" class="btn">⏹ Stop</button>
+         <button id="downloadRec" class="btn">⬇ Download</button>
+      </div>
+      <div id="studioStatus" style="margin-top:12px;color:#bfb8b0">Ready.</div>
+   </div>
+</div>
+
+<script>
+   // expects the studio JS (AudioEngine, ProjectDB) loaded via main.js or studio-specific file
+   // Minimal bootstrap to integrate with our global engine
+   document.addEventListener('DOMContentLoaded', async () => {
+      if (window.rackEngine && window.db) {
+         // initialize UI by calling the engine-specific builder (exists in studio JS)
+         try { if (window.initStudio) await window.initStudio(); } catch (e) { console.warn(e); }
+      } else {
+         console.warn('Audio engine not found. Load static/js/studio.js or main engine first.');
+      }
+   });
+   
+   document.getElementById('playSeq').onclick = () => { if (window.startPlay) window.startPlay(); };
+   document.getElementById('stopSeq').onclick = () => { if (window.stopPlay) window.stopPlay(); };
+   document.getElementById('saveProject').onclick = () => { if (window.sendProjectToServer) window.sendProjectToServer(); };
+</script>
+{% endblock %}

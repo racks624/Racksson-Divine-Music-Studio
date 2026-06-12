@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block head %}
+<meta name="description" content="Industrial‑Grade Studio Pro – Multi‑track, AI mixing, Chakra Fusion">
+<style>
+  /* Studio Pro custom overrides */
+  .pro-panel {
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,215,0,0.25);
+    padding: 1rem;
+    transition: all 0.2s ease;
+  }
+  .pro-panel:hover {
+    border-color: rgba(255,215,0,0.6);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+  .track-row {
+    background: rgba(30,30,40,0.8);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    padding: 8px;
+  }
+  .seq-step {
+    background: #2c2c36;
+    border-radius: 8px;
+    text-align: center;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: 0.05s linear;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #aaa;
+  }
+  .seq-step.active {
+    background: #f0b27a;
+    color: #000;
+    box-shadow: 0 0 8px #ffb347;
+  }
+  .seq-step.playing {
+    background: #ffd966;
+    transform: scale(0.98);
+  }
+  .chakra-pill {
+    background: rgba(0,0,0,0.5);
+    border-radius: 40px;
+    padding: 8px 12px;
+    margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.1s;
+  }
+  .btn-pro {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    border: none;
+    color: #0a0a0a;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-pro:hover {
+    transform: scale(1.02);
+    filter: brightness(1.05);
+  }
+  .waveform-container {
+    background: #111;
+    border-radius: 20px;
+    height: 80px;
+    margin-top: 12px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pro-panel" style="margin-bottom: 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+    <h2 style="color: var(--gold); margin:0">🎛️ Studio Pro — Industrial Grade</h2>
+    <div style="display: flex; gap: 12px;">
+      <div class="btn-pro" id="globalPlayBtn">▶ PLAY</div>
+      <div class="btn-pro" id="globalStopBtn">⏹ STOP</div>
+      <div class="btn-pro" id="saveProjectBtn">💾 SAVE PROJECT</div>
+      <div class="btn-pro" id="loadProjectBtn">📂 LOAD PROJECT</div>
+    </div>
+  </div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+  <!-- Sequencer area -->
+  <div class="pro-panel" style="flex: 3; min-width: 300px;">
+    <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 16px;">
+      <label>🎚️ BPM: <input type="number" id="bpmControl" value="90" min="40" max="240" style="width: 80px;"></label>
+      <label>🎛️ Master Vol: <input type="range" id="masterVol" min="0" max="1" step="0.01" value="0.85" style="width: 120px;"></label>
+      <span id="metronomeStatus" style="font-size: 0.8rem;">🔘 Pattern</span>
+    </div>
+    <div id="tracksContainer"></div>
+  </div>
+
+  <!-- Chakra Tuner + Recorder -->
+  <div class="pro-panel" style="flex: 1.2; min-width: 260px;">
+    <h3 style="color: var(--gold); margin-top: 0;">🌀 Chakra Tuner</h3>
+    <div id="chakraListPro"></div>
+    <hr style="margin: 16px 0; border-color: #333;">
+    <h3>🎙️ Master Recorder</h3>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button id="proStartRec" class="btn-pro">🔴 RECORD</button>
+      <button id="proStopRec" class="btn-pro">⏹️ STOP</button>
+      <button id="proDownloadRec" class="btn-pro">⬇️ DOWNLOAD</button>
+    </div>
+    <div class="waveform-container" id="waveformPreview"></div>
+    <div id="studioStatusMsg" style="margin-top: 12px; font-style: italic;">Ready</div>
+  </div>
+</div>
+
+<!-- Hidden file input for loading project -->
+<input type="file" id="loadProjectFile" accept=".json" style="display: none;">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/studio_pro.js') }}" defer></script>
+<script>
+  // Ensure studio pro initializes after DOM
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.StudioPro) window.StudioPro.init();
+    else console.warn("StudioPro not loaded");
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+py3env/
+*.db
+database.db
+
+# Uploads & generated media
+static/audio/uploads/
+static/projects/*.json
+static/audio/recordings/
+*.webm
+*.wav
+*.mp3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flask / logs
+instance/
+*.log

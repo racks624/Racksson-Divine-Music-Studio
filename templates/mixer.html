@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Divine Mixer</h2>
+<p class="brand-sub">A mixing console for the Golden Spirit — per-track volume, pan and EQ.</p>
+
+<section style="display:flex;gap:12px;">
+  <div style="flex:1;background:var(--glass);padding:12px;border-radius:8px;">
+    <div id="mixerTracks">
+      <!-- JS injects track rows and binds to engine -->
+    </div>
+  </div>
+
+  <div style="width:320px;background:var(--glass);padding:12px;border-radius:8px;">
+    <h4 style="color:var(--gold)">Master</h4>
+    <label>Master Volume</label>
+    <input id="masterVolume" type="range" min="0" max="1" step="0.01" value="0.9" />
+    <label>Global EQ - Low</label>
+    <input id="eqLow" type="range" min="-30" max="30" value="0" />
+    <label>Global EQ - Mid</label>
+    <input id="eqMid" type="range" min="-30" max="30" value="0" />
+    <label>Global EQ - High</label>
+    <input id="eqHigh" type="range" min="-30" max="30" value="0" />
+  </div>
+</section>
+
+<script>
+  // simple mixer UI bootstrap; expects engine with setMasterVolume and setEq
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const tracks = ['drums','bass','lead','chords'];
+    const container = document.getElementById('mixerTracks');
+    tracks.forEach(t=>{
+      const row = document.createElement('div'); row.style.display='flex'; row.style.gap='8px'; row.style.alignItems='center'; row.style.marginBottom='8px';
+      row.innerHTML = `<div style="width:80px;color:#ffdca3">${t}</div><input data-track="${t}" class="vol" type="range" min="0" max="1" step="0.01" value="1" style="flex:1">`;
+      container.appendChild(row);
+    });
+
+    document.getElementById('masterVolume').addEventListener('input', e=>{ window.rackEngine && window.rackEngine.setMasterVolume(parseFloat(e.target.value)); });
+    document.getElementById('eqLow').addEventListener('input', e=>{ window.rackEngine && window.rackEngine.setEq(parseFloat(e.target.value), window.rackEngine.eqMid ? window.rackEngine.eqMid.gain.value : 0, window.rackEngine.eqHigh ? window.rackEngine.eqHigh.gain.value : 0); });
+    document.getElementById('eqMid').addEventListener('input', e=>{ window.rackEngine && window.rackEngine.setEq(window.rackEngine.eqLow ? window.rackEngine.eqLow.gain.value : 0, parseFloat(e.target.value), window.rackEngine.eqHigh ? window.rackEngine.eqHigh.gain.value : 0); });
+    document.getElementById('eqHigh').addEventListener('input', e=>{ window.rackEngine && window.rackEngine.setEq(window.rackEngine.eqLow ? window.rackEngine.eqLow.gain.value : 0, window.rackEngine.eqMid ? window.rackEngine.eqMid.gain.value : 0, parseFloat(e.target.value)); });
+  });
+</script>
+{% endblock %}
