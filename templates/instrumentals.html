@@ -1,55 +1,40 @@
 {% extends "base.html" %}
 {% block head %}
-<meta name="description" content="Instrumentals – Sacred Sound Library & Live Looper" />
+<meta name="description" content="Instrumentals – Global Sound Lab & Live Looper" />
 <style>
   .pad-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 20px;
-    margin: 24px 0;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
   }
   .sound-pad {
     background: linear-gradient(145deg, #1e1a2f, #0f0c1a);
-    border-radius: 24px;
-    padding: 20px 12px;
+    border-radius: 20px;
+    padding: 16px 8px;
     text-align: center;
     cursor: pointer;
     transition: all 0.1s ease;
-    border: 1px solid rgba(255,215,0,0.3);
-    box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,215,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     user-select: none;
+    position: relative;
   }
-  .sound-pad:active {
-    transform: scale(0.97);
-    background: #2a2340;
-  }
-  .sound-pad.active {
-    border-color: #ffd700;
-    box-shadow: 0 0 15px rgba(255,215,0,0.6);
-  }
-  .pad-icon { font-size: 3rem; margin-bottom: 8px; }
-  .pad-label { font-weight: bold; color: var(--gold); }
-  .pad-freq { font-size: 0.75rem; color: #aaa; }
+  .sound-pad:active { transform: scale(0.97); background: #2a2340; }
+  .sound-pad.active { border-color: #ffd700; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+  .pad-icon { font-size: 2.5rem; margin-bottom: 6px; }
+  .pad-label { font-weight: bold; color: var(--gold); font-size: 0.8rem; }
+  .pad-freq { font-size: 0.6rem; color: #aaa; }
+  .pad-category { font-size: 0.6rem; color: #666; background: #222; border-radius: 8px; padding: 0 6px; }
   .looper-controls {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
     align-items: center;
-    margin: 24px 0;
     padding: 16px;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.5);
     border-radius: 32px;
-  }
-  .record-loop { background: #c0392b; color: white; border: none; }
-  .stop-loop { background: #2c3e50; }
-  .loop-slot {
-    background: #111;
-    border-radius: 20px;
-    padding: 12px;
-    margin: 8px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    margin: 16px 0;
   }
   .drop-zone {
     border: 2px dashed var(--gold);
@@ -61,40 +46,57 @@
     cursor: pointer;
   }
   .drop-zone.dragover { background: rgba(255,215,0,0.1); }
+  .loop-slot {
+    background: #111;
+    border-radius: 16px;
+    padding: 10px 16px;
+    margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sample-browser { max-height: 200px; overflow-y: auto; background: #1a1a22; border-radius: 16px; padding: 8px; }
+  .sample-item { display: flex; justify-content: space-between; padding: 4px 8px; border-bottom: 1px solid #222; }
+  .scene-panel { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .scene-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 6px 14px; border-radius: 20px; cursor: pointer; }
+  .scene-btn.active { border-color: var(--gold); color: var(--gold); }
 </style>
 {% endblock %}
-
 {% block content %}
-<h1 style="color: var(--gold);">🎻 Instrumentals – Sacred Sound Library</h1>
-<p class="brand-sub">Tap any pad to play a healing tone or drum hit. Record loops and layer frequencies.</p>
-
-<!-- Looper Controls -->
-<div class="looper-controls">
-  <button id="startLoopRec" class="btn record-loop">🔴 Record Loop</button>
-  <button id="stopLoopRec" class="btn stop-loop">⏹️ Stop & Save</button>
-  <button id="playLastLoop" class="btn gold">▶ Play Last Loop</button>
-  <button id="clearLoops" class="btn">🗑️ Clear Loops</button>
-  <span style="margin-left: auto;">BPM:</span>
-  <input type="number" id="loopBpm" value="90" min="40" max="240" style="width:70px;">
-  <span id="loopStatus" style="margin-left: 10px;">Ready</span>
+<h1 style="color: var(--gold);">🎻 Global Instrumentals</h1>
+<div class="scene-panel">
+  <button class="scene-btn active" data-scene="A">Scene A</button>
+  <button class="scene-btn" data-scene="B">Scene B</button>
+  <button class="scene-btn" id="saveSceneBtn">💾 Save Scene</button>
+  <button class="scene-btn" id="loadSceneBtn">📂 Load Scene</button>
+  <input type="file" id="sceneFile" accept=".json" style="display:none;">
 </div>
-
-<!-- Pad Grid -->
+<div class="looper-controls">
+  <button id="startLoopRec" class="btn" style="background:#c0392b;color:#fff;">🔴 Record Loop</button>
+  <button id="stopLoopRec" class="btn" style="background:#2c3e50;">⏹ Stop</button>
+  <button id="playLoopBtn" class="btn gold">▶ Play</button>
+  <button id="clearLoopsBtn" class="btn">🗑️ Clear</button>
+  <label>BPM <input type="number" id="loopBpm" value="90" min="40" max="240" style="width:70px;"></label>
+  <label>Quantize <select id="quantizeSelect"><option value="4">1/4</option><option value="8" selected>1/8</option><option value="16">1/16</option></select></label>
+  <span id="loopStatus" style="margin-left:auto;">Ready</span>
+</div>
 <div class="pad-grid" id="instrumentPadGrid"></div>
-
-<!-- Drop Zone for custom samples -->
 <div class="drop-zone" id="dropZone">
-  <p>📁 Drag & drop your own audio files here (WAV, MP3, OGG, WebM) to add custom pads</p>
+  <p>📁 Drop audio files here or click to upload</p>
   <input type="file" id="fileInput" accept="audio/*" multiple style="display:none;">
 </div>
-
-<!-- Loop History -->
-<div id="loopHistory" style="margin-top: 20px;">
-  <h3>🎞️ Loop History</h3>
-  <div id="loopList"></div>
+<div style="display:flex; gap:20px; flex-wrap:wrap;">
+  <div style="flex:2; min-width:300px;">
+    <h3>🎞️ Loop History</h3>
+    <div id="loopList"></div>
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <h3>📂 Sample Library</h3>
+    <div class="sample-browser" id="sampleBrowser"></div>
+  </div>
 </div>
+<div style="margin-top:12px; color:#888; font-size:0.8rem;" id="statusBar">Ready</div>
 {% endblock %}
-
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/instrumentals.js') }}" defer></script>
 {% endblock %}

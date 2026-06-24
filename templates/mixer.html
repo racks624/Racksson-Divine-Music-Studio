@@ -1,34 +1,202 @@
 {% extends "base.html" %}
 {% block head %}
+<meta name="description" content="Professional Mixer — Channel strips, FX, dynamics, and master bus" />
 <style>
-  .mixer-container { display: flex; gap: 20px; overflow-x: auto; padding: 16px 0; }
-  .channel { min-width: 130px; background: rgba(0,0,0,0.6); border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #333; }
+  .mixer-container {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 20px 0 30px;
+    align-items: stretch;
+  }
+  .channel {
+    min-width: 120px;
+    background: linear-gradient(180deg, #1a1a24 0%, #0e0e14 100%);
+    border-radius: 16px;
+    padding: 12px 8px;
+    border: 1px solid #2a2a3a;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: border-color 0.2s;
+  }
   .channel.active { border-color: var(--gold); }
-  .channel .label { font-weight: bold; color: var(--gold); text-transform: uppercase; }
-  .channel input[type="range"] { width: 100%; margin: 6px 0; }
-  .fx-send { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
-  .channel .meter { height: 60px; background: #111; border-radius: 4px; margin-top: 6px; overflow: hidden; }
-  .meter-bar { height: 100%; width: 0%; background: linear-gradient(to top, #00ff00, #ffff00, #ff0000); transition: width 0.05s; }
-  .master-section { background: #1a1a22; padding: 16px; border-radius: 20px; margin-top: 24px; }
-  .btn-sm { padding: 4px 12px; font-size: 0.8rem; }
+  .channel .label {
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .channel .fader-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+  }
+  .channel input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    margin: 4px 0;
+    background: transparent;
+  }
+  .channel input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: #333;
+    border-radius: 4px;
+  }
+  .channel input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin-top: -6px;
+    box-shadow: 0 0 8px rgba(255,215,0,0.4);
+  }
+  .vertical-fader {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    height: 120px;
+    width: 6px;
+    margin: 4px 0;
+  }
+  .channel .meter {
+    width: 6px;
+    height: 60px;
+    background: #111;
+    border-radius: 4px;
+    margin: 4px 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .meter-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, #00ff00, #ffff00, #ff0000);
+    transition: height 0.05s;
+    border-radius: 4px;
+  }
+  .eq-section {
+    width: 100%;
+    font-size: 0.6rem;
+    color: #aaa;
+    margin: 4px 0;
+    text-align: center;
+  }
+  .eq-section input {
+    width: 80%;
+    margin: 2px 0;
+  }
+  .comp-section {
+    width: 100%;
+    font-size: 0.6rem;
+    color: #aaa;
+    margin: 4px 0;
+    text-align: center;
+  }
+  .comp-section input {
+    width: 80%;
+    margin: 2px 0;
+  }
+  .fx-sends {
+    display: flex;
+    gap: 4px;
+    font-size: 0.6rem;
+    color: #aaa;
+    margin: 4px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .fx-sends label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .fx-sends input {
+    width: 40px;
+  }
+  .btn-sm {
+    padding: 2px 8px;
+    font-size: 0.6rem;
+    border-radius: 12px;
+    background: #2a2a3a;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+  }
+  .btn-sm.active { background: var(--gold); color: #000; }
+  .master-section {
+    background: #14141e;
+    border-radius: 20px;
+    padding: 16px 24px;
+    margin-top: 24px;
+    border: 1px solid #2a2a3a;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+  }
+  .master-section .meter-big {
+    width: 10px;
+    height: 80px;
+    background: #111;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .master-section .meter-big .bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, #00ff00, #ffff00, #ff0000);
+    transition: height 0.05s;
+  }
+  .snapshot-panel {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .snapshot-btn {
+    background: #222;
+    border: 1px solid #444;
+    color: #aaa;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .snapshot-btn.active { border-color: var(--gold); color: var(--gold); }
+  .scene-name { font-weight: bold; color: var(--gold); }
 </style>
 {% endblock %}
 {% block content %}
-<h2 style="color:var(--gold);">🎚️ Professional Mixer</h2>
+<h2 style="color:var(--gold);">🎚️ Enterprise Mixer</h2>
+<div class="snapshot-panel">
+  <button class="snapshot-btn active" data-scene="A">Scene A</button>
+  <button class="snapshot-btn" data-scene="B">Scene B</button>
+  <button class="snapshot-btn" id="saveSnapshotBtn">💾 Save Scene</button>
+  <button class="snapshot-btn" id="loadSnapshotBtn">📂 Load Scene</button>
+  <input type="file" id="snapshotFile" accept=".json" style="display:none;">
+</div>
 <div class="mixer-container" id="mixerChannels"></div>
 <div class="master-section">
-  <div style="display: flex; gap: 30px; flex-wrap: wrap; align-items: center;">
-    <div><strong>Master</strong></div>
-    <label>Volume <input type="range" id="masterVol" min="0" max="1.2" step="0.01" value="0.9" style="width:120px;"></label>
-    <label>Limiter <input type="range" id="limiterThresh" min="-30" max="0" step="0.5" value="-3" style="width:100px;"></label>
-    <span id="masterMeter" style="background:#222; padding:4px 12px; border-radius:8px;">0.0 dB</span>
-  </div>
-  <div style="display:flex; gap:30px; flex-wrap:wrap; margin-top:12px;">
-    <label>Reverb Send <input type="range" id="globalReverb" min="0" max="1" step="0.01" value="0.3"></label>
-    <label>Delay Send <input type="range" id="globalDelay" min="0" max="1" step="0.01" value="0.15"></label>
-  </div>
+  <div><strong>Master</strong></div>
+  <label>Vol <input type="range" id="masterVol" min="0" max="1.2" step="0.01" value="0.9" style="width:100px;"></label>
+  <label>Limiter Threshold <input type="range" id="limiterThresh" min="-30" max="0" step="0.5" value="-3" style="width:80px;"></label>
+  <div class="meter-big" id="masterMeterBig"><div class="bar" style="height:10%;"></div></div>
+  <span id="masterMeterDb" style="font-family:monospace;">-0.0 dB</span>
+  <label>Reverb <input type="range" id="globalReverb" min="0" max="1" step="0.01" value="0.25" style="width:80px;"></label>
+  <label>Delay <input type="range" id="globalDelay" min="0" max="1" step="0.01" value="0.15" style="width:80px;"></label>
+  <label>Chorus <input type="range" id="globalChorus" min="0" max="1" step="0.01" value="0.1" style="width:80px;"></label>
 </div>
-<div id="fxRack" style="margin-top:20px; display:flex; gap:20px; flex-wrap:wrap;"></div>
+<div id="statusBar" style="margin-top:12px; color:#888; font-size:0.8rem;">Mixer ready</div>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/mixer.js') }}" defer></script>
