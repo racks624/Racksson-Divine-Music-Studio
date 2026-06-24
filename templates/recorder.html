@@ -1,38 +1,94 @@
 {% extends "base.html" %}
+{% block head %}
+<meta name="description" content="Racksson Recorder – Professional audio capture with waveform" />
+<style>
+  .recorder-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .recorder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .recorder-header h2 { color: var(--gold); margin: 0; }
+  .recorder-controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .waveform-container {
+    background: #0a0a12;
+    border-radius: 24px;
+    padding: 16px;
+    margin: 16px 0;
+    border: 1px solid #2a2a3a;
+    position: relative;
+    height: 120px;
+  }
+  .waveform-container canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .recorder-status {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin: 12px 0;
+    padding: 8px 16px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 40px;
+  }
+  .recorder-status .time { font-family: monospace; font-size: 1.2rem; color: var(--gold); }
+  .recorder-status .state { font-weight: bold; }
+  .recording-indicator { display: inline-block; width: 12px; height: 12px; background: #c0392b; border-radius: 50%; animation: blink 0.8s infinite; }
+  .hidden { display: none !important; }
+  .saved-recording {
+    background: #1a1a22;
+    border-radius: 16px;
+    padding: 12px;
+    margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+</style>
+{% endblock %}
 {% block content %}
-<h2>Recording Temple</h2>
-<p class="brand-sub">Capture your voice, instruments or cosmic improvisations — save to local and optionally upload to the cloud.</p>
-
-<section style="display:flex;gap:12px;">
-  <div style="flex:1;background:var(--glass);padding:12px;border-radius:8px;">
-    <label>Title</label>
-    <input id="recTitle" type="text" placeholder="My Sacred Session" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);width:100%">
-    <div class="rec-controls" style="margin-top:12px">
-      <button class="btn gold" id="startRecBtn">🎙 Start</button>
-      <button class="btn" id="stopRecBtn">⏹ Stop</button>
-      <button class="btn" id="downloadBtn">⬇ Download</button>
-      <button class="btn" id="uploadBtn">📤 Upload</button>
+<div class="recorder-container">
+  <div class="recorder-header">
+    <h2>🎙️ Professional Recorder</h2>
+    <div class="recorder-controls">
+      <button id="recStartBtn" class="btn" style="background:#c0392b;color:#fff;">🔴 Record</button>
+      <button id="recStopBtn" class="btn" style="background:#2c3e50;" disabled>⏹ Stop</button>
+      <button id="recPlayBtn" class="btn gold" disabled>▶ Play</button>
+      <button id="recDownloadBtn" class="btn" disabled>⬇️ Download</button>
+      <button id="recClearBtn" class="btn">🗑️ Clear</button>
     </div>
-    <div id="recordLog" style="margin-top:12px;color:#bfb8b0">No recording yet.</div>
   </div>
 
-  <div style="width:320px;background:var(--glass);padding:12px;border-radius:8px;">
-    <h4 style="color:var(--gold)">Session Info</h4>
-    <div id="sessionInfo">Sample rate, duration, saved files will display here.</div>
+  <div class="recorder-status">
+    <span class="state" id="recState">● Ready</span>
+    <span class="time" id="recTime">00:00</span>
+    <span id="recIndicator" class="recording-indicator hidden"></span>
   </div>
-</section>
 
-<script>
-  // wire to core recorder functions from static/js/recorder.js
-  document.getElementById('startRecBtn').onclick = async ()=>{
-    await window.rackEngine && startRec(window.rackEngine);
-    document.getElementById('recordLog').innerText = 'Recording...';
-  };
-  document.getElementById('stopRecBtn').onclick = ()=>{ stopRec(); document.getElementById('recordLog').innerText = 'Recording stopped.'; };
-  document.getElementById('downloadBtn').onclick = ()=>{ downloadLastRecording && downloadLastRecording(); };
-  document.getElementById('uploadBtn').onclick = async ()=>{
-    // if last blob exists inside recorder.js, the upload to /api/save-recording is handled there when recorder stops,
-    alert('Upload will occur automatically when recording stops (if available).');
-  };
-</script>
+  <div class="waveform-container">
+    <canvas id="waveformCanvas"></canvas>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <h3>📂 Saved Recordings</h3>
+    <div id="savedRecordingsList"></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/recorder.js') }}" defer></script>
 {% endblock %}

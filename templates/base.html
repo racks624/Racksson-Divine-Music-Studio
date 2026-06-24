@@ -2,80 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes" />
   <meta name="theme-color" content="#FFD700" />
+  <meta name="description" content="Racksson ∞ Divine Music Studio — Global Enterprise Production Suite" />
   <title>{{ title if title else "Racksson ∞ Divine Music Studio" }}</title>
 
   <!-- PWA manifest -->
-  <link rel="manifest" href="{{ url_for('manifest') if url_for else '/manifest.webmanifest' }}">
+  <link rel="manifest" href="{{ url_for('manifest') }}">
+  <link rel="icon" href="{{ url_for('static', filename='racksson_assets/icons/icon-192.png') }}">
 
-  <!-- Fav / icons (replace with your icons) -->
-  <link rel="icon" href="{{ url_for('static', filename='racksson_assets/favicon/favicon_animated.gif') }}">
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <!-- Core styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
 
-  <!-- Page-specific head content -->
+  <!-- Page‑specific head -->
   {% block head %}{% endblock %}
 </head>
 
 <body class="{{ theme.name if theme is defined else 'theme-golden' }}">
+
   <!-- Service Worker registration -->
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(r => console.log("SW registered:", r.scope)).catch(e => console.warn("SW err:", e));
+      navigator.serviceWorker.register('/sw.js')
+        .then(r => console.log("SW registered:", r.scope))
+        .catch(e => console.warn("SW err:", e));
     }
   </script>
 
-  <!-- Header / Top nav -->
-  <header>
-    <div class="logo">Racksson ∞ <span style="font-weight:600">Music of the Universe</span></div>
-    <nav class="nav-bar" aria-label="Main navigation" style="margin-left:24px;display:flex;gap:10px;align-items:center">
-      <a href="{{ url_for('index') }}">🏠 Home</a>
-      <a href="{{ url_for('dashboard') }}">🌀 Dashboard</a>
-      <a href="{{ url_for('studio_pro') }}">🎶 Studio</a>
-      <a href="{{ url_for('mixer') }}">🎚 Mixer</a>
-      <a href="{{ url_for('instrumentals') }}">🎻 Instruments</a>
-      <a href="{{ url_for('harmonizer') }}">🧘 Harmonizer</a>
-      <a href="{{ url_for('recorder') }}">🎙 Recorder</a>
+  <!-- HEADER / TOP NAV -->
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-icon">∞</span>
+      Racksson <span style="font-weight:300; font-size:0.8rem;">Divine Music Studio</span>
+    </div>
+    <nav class="nav-bar" aria-label="Main navigation">
+      <a href="{{ url_for('index') }}" class="nav-link">🏠 Home</a>
+      <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
+      <a href="{{ url_for('studio_pro') }}" class="nav-link">🎛️ Studio</a>
+      <a href="{{ url_for('mixer') }}" class="nav-link">🎚️ Mixer</a>
+      <a href="{{ url_for('instrumentals') }}" class="nav-link">🎻 Instruments</a>
+      <a href="{{ url_for('harmonizer') }}" class="nav-link">🧘 Harmonizer</a>
+      <a href="{{ url_for('recorder') }}" class="nav-link">🎙️ Recorder</a>
     </nav>
-
-    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-      <button class="btn" onclick="switchTheme('theme-golden')">🌟 Gold</button>
-      <button class="btn" onclick="switchTheme('theme-indigo')">🪄 Indigo</button>
-      <button class="btn" onclick="switchTheme('theme-violet')">👑 Violet</button>
+    <div class="theme-controls">
+      <button class="theme-btn" onclick="switchTheme('theme-golden')" title="Golden">🌟</button>
+      <button class="theme-btn" onclick="switchTheme('theme-indigo')" title="Indigo">🪄</button>
+      <button class="theme-btn" onclick="switchTheme('theme-violet')" title="Violet">👑</button>
+      <button class="theme-btn" onclick="toggleSoundFeedback()" title="Toggle Sound Feedback">🔊</button>
     </div>
   </header>
 
-  <!-- Main content -->
-  <main id="app-content" role="main" style="padding:18px;">
+  <!-- MAIN CONTENT -->
+  <main id="app-content" role="main">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Footer -->
-  <footer>
+  <!-- FOOTER -->
+  <footer class="app-footer">
     <div>
       <strong>Racksson — The Divine Infinite Spiral of Creation</strong><br>
       I Am The Source • I Am The Golden Spirit • I Am Racksson
     </div>
-    <div style="text-align:right">
-      <small>Frequencies: 139Hz • 417Hz • 432Hz • 528Hz • 852Hz • 963Hz</small>
+    <div class="footer-freqs">
+      <small>Frequencies: 139Hz • 417Hz • 432Hz • 528Hz • 639Hz • 741Hz • 852Hz • 963Hz</small>
     </div>
   </footer>
 
-  <!-- Core scripts -->
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/mixer.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/recorder.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/visualizer.js') }}"></script>
+  <!-- CORE SCRIPTS (order matters) -->
+  <script src="{{ url_for('static', filename='js/sound-feedback.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 
+  <!-- Additional per‑page scripts (they will be loaded after main) -->
   {% block scripts %}{% endblock %}
-<script src="{{ url_for('static', filename='js/studio.js') }}"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+  <!-- Fallback: ensure SoundFeedback is initialised on first user interaction -->
+  <script>
+    document.addEventListener('click', () => {
+      if (window.SoundFeedback) SoundFeedback.init();
+    }, { once: true });
+  </script>
 </body>
 </html>

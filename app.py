@@ -198,3 +198,14 @@ if __name__ == '__main__':
         port=int(app.config['PORT']),
         debug=app.config['DEBUG']
     )
+
+# ---- List Recordings ----
+@app.route('/api/recordings', methods=['GET'])
+def api_list_recordings():
+    try:
+        upload_dir = os.path.join(app.static_folder, 'audio', 'uploads')
+        os.makedirs(upload_dir, exist_ok=True)
+        files = [f for f in os.listdir(upload_dir) if f.startswith('recording_') and f.endswith(('.webm', '.wav'))]
+        return jsonify({'recordings': files})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
