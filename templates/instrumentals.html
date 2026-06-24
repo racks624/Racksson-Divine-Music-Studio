@@ -1,14 +1,100 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% block head %}
+<meta name="description" content="Instrumentals – Sacred Sound Library & Live Looper" />
+<style>
+  .pad-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+  }
+  .sound-pad {
+    background: linear-gradient(145deg, #1e1a2f, #0f0c1a);
+    border-radius: 24px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    border: 1px solid rgba(255,215,0,0.3);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+    user-select: none;
+  }
+  .sound-pad:active {
+    transform: scale(0.97);
+    background: #2a2340;
+  }
+  .sound-pad.active {
+    border-color: #ffd700;
+    box-shadow: 0 0 15px rgba(255,215,0,0.6);
+  }
+  .pad-icon { font-size: 3rem; margin-bottom: 8px; }
+  .pad-label { font-weight: bold; color: var(--gold); }
+  .pad-freq { font-size: 0.75rem; color: #aaa; }
+  .looper-controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 24px 0;
+    padding: 16px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 32px;
+  }
+  .record-loop { background: #c0392b; color: white; border: none; }
+  .stop-loop { background: #2c3e50; }
+  .loop-slot {
+    background: #111;
+    border-radius: 20px;
+    padding: 12px;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .drop-zone {
+    border: 2px dashed var(--gold);
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px;
+    margin: 20px 0;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  .drop-zone.dragover { background: rgba(255,215,0,0.1); }
+</style>
+{% endblock %}
 
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <title></title>
-</head>
+{% block content %}
+<h1 style="color: var(--gold);">🎻 Instrumentals – Sacred Sound Library</h1>
+<p class="brand-sub">Tap any pad to play a healing tone or drum hit. Record loops and layer frequencies.</p>
 
-<body>
-   
-</body>
+<!-- Looper Controls -->
+<div class="looper-controls">
+  <button id="startLoopRec" class="btn record-loop">🔴 Record Loop</button>
+  <button id="stopLoopRec" class="btn stop-loop">⏹️ Stop & Save</button>
+  <button id="playLastLoop" class="btn gold">▶ Play Last Loop</button>
+  <button id="clearLoops" class="btn">🗑️ Clear Loops</button>
+  <span style="margin-left: auto;">BPM:</span>
+  <input type="number" id="loopBpm" value="90" min="40" max="240" style="width:70px;">
+  <span id="loopStatus" style="margin-left: 10px;">Ready</span>
+</div>
 
-</html>
+<!-- Pad Grid -->
+<div class="pad-grid" id="instrumentPadGrid"></div>
+
+<!-- Drop Zone for custom samples -->
+<div class="drop-zone" id="dropZone">
+  <p>📁 Drag & drop your own audio files here (WAV, MP3, OGG, WebM) to add custom pads</p>
+  <input type="file" id="fileInput" accept="audio/*" multiple style="display:none;">
+</div>
+
+<!-- Loop History -->
+<div id="loopHistory" style="margin-top: 20px;">
+  <h3>🎞️ Loop History</h3>
+  <div id="loopList"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/instrumentals.js') }}" defer></script>
+{% endblock %}
