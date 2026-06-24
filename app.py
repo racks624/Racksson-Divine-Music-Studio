@@ -112,3 +112,23 @@ if __name__ == '__main__':
         port=int(app.config.get('PORT', 5000)),
         debug=app.config.get('DEBUG', True)
     )
+
+# Sample upload and listing
+@app.route('/api/upload-sample', methods=['POST'])
+def upload_sample():
+    if 'sample' not in request.files:
+        return jsonify({'error': 'No file'}), 400
+    f = request.files['sample']
+    filename = secure_filename(f.filename)
+    upload_dir = os.path.join(app.static_folder, 'audio', 'uploads')
+    os.makedirs(upload_dir, exist_ok=True)
+    path = os.path.join(upload_dir, filename)
+    f.save(path)
+    return jsonify({'filename': filename})
+
+@app.route('/api/samples', methods=['GET'])
+def list_samples():
+    upload_dir = os.path.join(app.static_folder, 'audio', 'uploads')
+    os.makedirs(upload_dir, exist_ok=True)
+    files = [f for f in os.listdir(upload_dir) if f.endswith(('.wav','.mp3','.ogg','.webm'))]
+    return jsonify({'samples': files})

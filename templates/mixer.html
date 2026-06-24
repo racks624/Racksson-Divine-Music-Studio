@@ -1,43 +1,35 @@
 {% extends "base.html" %}
+{% block head %}
+<style>
+  .mixer-container { display: flex; gap: 20px; overflow-x: auto; padding: 16px 0; }
+  .channel { min-width: 130px; background: rgba(0,0,0,0.6); border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #333; }
+  .channel.active { border-color: var(--gold); }
+  .channel .label { font-weight: bold; color: var(--gold); text-transform: uppercase; }
+  .channel input[type="range"] { width: 100%; margin: 6px 0; }
+  .fx-send { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+  .channel .meter { height: 60px; background: #111; border-radius: 4px; margin-top: 6px; overflow: hidden; }
+  .meter-bar { height: 100%; width: 0%; background: linear-gradient(to top, #00ff00, #ffff00, #ff0000); transition: width 0.05s; }
+  .master-section { background: #1a1a22; padding: 16px; border-radius: 20px; margin-top: 24px; }
+  .btn-sm { padding: 4px 12px; font-size: 0.8rem; }
+</style>
+{% endblock %}
 {% block content %}
-<h2>Divine Mixer</h2>
-<p class="brand-sub">A mixing console for the Golden Spirit — per-track volume, pan and EQ.</p>
-
-<section style="display:flex;gap:12px;">
-  <div style="flex:1;background:var(--glass);padding:12px;border-radius:8px;">
-    <div id="mixerTracks">
-      <!-- JS injects track rows and binds to engine -->
-    </div>
+<h2 style="color:var(--gold);">🎚️ Professional Mixer</h2>
+<div class="mixer-container" id="mixerChannels"></div>
+<div class="master-section">
+  <div style="display: flex; gap: 30px; flex-wrap: wrap; align-items: center;">
+    <div><strong>Master</strong></div>
+    <label>Volume <input type="range" id="masterVol" min="0" max="1.2" step="0.01" value="0.9" style="width:120px;"></label>
+    <label>Limiter <input type="range" id="limiterThresh" min="-30" max="0" step="0.5" value="-3" style="width:100px;"></label>
+    <span id="masterMeter" style="background:#222; padding:4px 12px; border-radius:8px;">0.0 dB</span>
   </div>
-
-  <div style="width:320px;background:var(--glass);padding:12px;border-radius:8px;">
-    <h4 style="color:var(--gold)">Master</h4>
-    <label>Master Volume</label>
-    <input id="masterVolume" type="range" min="0" max="1" step="0.01" value="0.9" />
-    <label>Global EQ - Low</label>
-    <input id="eqLow" type="range" min="-30" max="30" value="0" />
-    <label>Global EQ - Mid</label>
-    <input id="eqMid" type="range" min="-30" max="30" value="0" />
-    <label>Global EQ - High</label>
-    <input id="eqHigh" type="range" min="-30" max="30" value="0" />
+  <div style="display:flex; gap:30px; flex-wrap:wrap; margin-top:12px;">
+    <label>Reverb Send <input type="range" id="globalReverb" min="0" max="1" step="0.01" value="0.3"></label>
+    <label>Delay Send <input type="range" id="globalDelay" min="0" max="1" step="0.01" value="0.15"></label>
   </div>
-</section>
-
-<script>
-  // simple mixer UI bootstrap; expects engine with setMasterVolume and setEq
-  document.addEventListener('DOMContentLoaded', ()=>{
-    const tracks = ['drums','bass','lead','chords'];
-    const container = document.getElementById('mixerTracks');
-    tracks.forEach(t=>{
-      const row = document.createElement('div'); row.style.display='flex'; row.style.gap='8px'; row.style.alignItems='center'; row.style.marginBottom='8px';
-      row.innerHTML = `<div style="width:80px;color:#ffdca3">${t}</div><input data-track="${t}" class="vol" type="range" min="0" max="1" step="0.01" value="1" style="flex:1">`;
-      container.appendChild(row);
-    });
-
-    document.getElementById('masterVolume').addEventListener('input', e=>{ window.rackEngine && window.rackEngine.setMasterVolume(parseFloat(e.target.value)); });
-    document.getElementById('eqLow').addEventListener('input', e=>{ window.rackEngine && window.rackEngine.setEq(parseFloat(e.target.value), window.rackEngine.eqMid ? window.rackEngine.eqMid.gain.value : 0, window.rackEngine.eqHigh ? window.rackEngine.eqHigh.gain.value : 0); });
-    document.getElementById('eqMid').addEventListener('input', e=>{ window.rackEngine && window.rackEngine.setEq(window.rackEngine.eqLow ? window.rackEngine.eqLow.gain.value : 0, parseFloat(e.target.value), window.rackEngine.eqHigh ? window.rackEngine.eqHigh.gain.value : 0); });
-    document.getElementById('eqHigh').addEventListener('input', e=>{ window.rackEngine && window.rackEngine.setEq(window.rackEngine.eqLow ? window.rackEngine.eqLow.gain.value : 0, window.rackEngine.eqMid ? window.rackEngine.eqMid.gain.value : 0, parseFloat(e.target.value)); });
-  });
-</script>
+</div>
+<div id="fxRack" style="margin-top:20px; display:flex; gap:20px; flex-wrap:wrap;"></div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/mixer.js') }}" defer></script>
 {% endblock %}

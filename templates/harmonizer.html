@@ -1,69 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Harmonizer • Divine Frequency Architect</h2>
-<p class="brand-sub">Generate harmonies, suggest chakra alignments and craft resonant chord stacks.</p>
-
-<section style="display:flex;gap:12px;align-items:flex-start;">
-  <div style="flex:1;background:var(--glass);padding:12px;border-radius:10px;">
-    <label>Root Frequency (Hz)</label>
-    <input id="rootFreq" type="number" value="432" step="0.1" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);width:140px">
-    <label style="margin-left:12px">Scale</label>
-    <select id="scaleType" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);">
-      <option value="minor">Minor (soulful)</option>
-      <option value="major">Major (radiant)</option>
-      <option value="custom">Custom</option>
-    </select>
-    <div style="margin-top:12px">
-      <button class="btn gold" onclick="generateHarmony()">Generate Harmony</button>
-      <button class="btn" onclick="aiSuggest()">AI Suggest</button>
+<h2 style="color:var(--gold);">🧘 Chakra Harmonizer – Live Pitch Shifter</h2>
+<div style="display:flex; gap:30px; flex-wrap:wrap;">
+  <div style="flex:1; min-width:280px; background:rgba(0,0,0,0.5); padding:20px; border-radius:24px;">
+    <h3>🎤 Input</h3>
+    <button id="harmonizeMic" class="btn gold">🎤 Start Microphone</button>
+    <button id="stopHarmonize" class="btn">⏹ Stop</button>
+    <div style="margin-top:20px;">
+      <label>Pitch Shift (cents) <input type="range" id="pitchShift" min="-1200" max="1200" value="0" step="5" style="width:100%;"></label>
+      <span id="pitchDisplay" style="display:block; text-align:center;">0 cents</span>
     </div>
-
-    <div id="harmonyResult" style="margin-top:12px;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px;"></div>
+    <div style="margin-top:12px;">
+      <label>Harmony Voices <input type="number" id="harmonyVoices" value="2" min="1" max="8" style="width:60px;"></label>
+      <label>Mix <input type="range" id="harmonyMix" min="0" max="1" step="0.01" value="0.7" style="width:100px;"></label>
+    </div>
+    <div id="harmonyStatus" style="margin-top:12px; color:#aaa;">Ready</div>
   </div>
-
-  <div style="width:340px;background:var(--glass);padding:12px;border-radius:10px;">
-    <h4 style="color:var(--gold)">Presets & Visualize</h4>
-    <div id="harmonyPresets"></div>
-    <canvas id="harmonyCanvas" width="300" height="200" style="width:100%;margin-top:12px;border-radius:8px;background:transparent"></canvas>
+  <div style="flex:1; min-width:280px; background:rgba(0,0,0,0.5); padding:20px; border-radius:24px;">
+    <h3>📊 Visualizer</h3>
+    <canvas id="harmonyCanvas" width="400" height="120" style="width:100%; background:#111; border-radius:16px;"></canvas>
+    <div style="margin-top:12px;">
+      <p><strong>How it works:</strong> The harmonizer creates additional voices detuned from the input. Use the slider to shift pitch up/down. Voices add chorus/thickening.</p>
+    </div>
   </div>
-</section>
-
-<script>
-  async function generateHarmony(){
-    const base = parseFloat(document.getElementById('rootFreq').value||432);
-    const scale = document.getElementById('scaleType').value;
-    // call backend API
-    try {
-      const r = await fetch('/api/generate-harmony', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ base_frequency: base, chakra: null, scale })
-      });
-      const j = await r.json();
-      document.getElementById('harmonyResult').innerText = JSON.stringify(j, null, 2);
-      // small visualization (bars)
-      const canvas = document.getElementById('harmonyCanvas');
-      const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height);
-      (j.notes || []).forEach((f,i)=>{
-        const h = (f / base) * 40;
-        ctx.fillStyle = '#ffd966';
-        ctx.fillRect(i*60 + 10, canvas.height - h, 40, h);
-        ctx.fillStyle = '#fff';
-        ctx.fillText(Math.round(f)+'Hz', i*60 + 12, canvas.height - h - 6);
-      });
-    } catch(e){ console.warn(e); alert('Harmony generation failed'); }
-  }
-
-  async function aiSuggest(){
-    try {
-      const r = await fetch('/api/ai-suggest', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ context: 'harmonizer', current_freq: parseFloat(document.getElementById('rootFreq').value || 432) })
-      });
-      const j = await r.json();
-      document.getElementById('harmonyResult').innerText = JSON.stringify(j, null, 2);
-    } catch(e){ console.warn(e); alert('AI suggest failed'); }
-  }
-</script>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/harmonizer.js') }}" defer></script>
 {% endblock %}
